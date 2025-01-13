@@ -491,8 +491,23 @@ function sortByAsc(arr) {
  *  '012345', 3 => '024135' => '043215' => '031425'
  *  'qwerty', 3 => 'qetwry' => 'qtrewy' => 'qrwtey'
  */
-function shuffleChar(/* str, iterations */) {
-  throw new Error('Not implemented');
+function shuffleChar(str, iterations) {
+  let result = str;
+
+  for (let i = 1; i <= iterations; i += 1) {
+    let evenStr = '';
+    let oddStr = '';
+    for (let j = 0; j < str.length; j += 1) {
+      if (j % 2 === 0) {
+        evenStr += result[j];
+      } else {
+        oddStr += result[j];
+      }
+    }
+    result = evenStr + oddStr;
+    if (result === str) return shuffleChar(str, iterations % i);
+  }
+  return result;
 }
 
 /**
@@ -512,8 +527,46 @@ function shuffleChar(/* str, iterations */) {
  * @param {number} number The source number
  * @returns {number} The nearest larger number, or original number if none exists.
  */
-function getNearestBigger(/* number */) {
-  throw new Error('Not implemented');
+function getNearestBigger(number) {
+  const arr = [...number.toFixed()];
+  const numArray = arr.map((item) => +item);
+  let returnPosition = 0;
+  let minNumber = 0;
+  for (let i = numArray.length - 2; i >= 0; i -= 1) {
+    if (numArray[i + 1] > numArray[i]) {
+      const temp = numArray[i];
+      minNumber = temp;
+      returnPosition = i;
+      numArray[i] = numArray[i + 1];
+      numArray[i + 1] = temp;
+      break;
+    }
+  }
+  if (returnPosition === 0) {
+    return number;
+  }
+  const arrayforSortArterMin = [];
+  const arrayforSortBeforeMin = [];
+  for (let i = 0; i <= returnPosition - 1; i += 1) {
+    arrayforSortBeforeMin.push(numArray[i]);
+  }
+  for (let i = returnPosition + 1; i <= numArray.length - 1; i += 1) {
+    arrayforSortArterMin.push(numArray[i]);
+  }
+  const arrayforSortArterMinSort = arrayforSortArterMin.sort((a, b) => a - b);
+  for (let i = arrayforSortArterMinSort.length - 1; i >= 0; i -= 1) {
+    if (
+      arrayforSortArterMinSort[i] < numArray[returnPosition] &&
+      arrayforSortArterMinSort[i] > minNumber
+    ) {
+      const temp = arrayforSortArterMinSort[i];
+      arrayforSortArterMinSort[i] = numArray[returnPosition];
+      numArray[returnPosition] = temp;
+    }
+  }
+  const preresult = [...arrayforSortBeforeMin, numArray[returnPosition]];
+  const result = Number([...preresult, ...arrayforSortArterMinSort].join(''));
+  return result;
 }
 
 module.exports = {
